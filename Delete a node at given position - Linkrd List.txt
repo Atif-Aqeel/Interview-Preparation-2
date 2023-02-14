@@ -1,0 +1,94 @@
+Algorithm for how to delete a node before specified position in singly linked list
+If the head is NULL, return.
+
+Create a node temp and make it point to the head.
+
+If the position is 0, it means that we have to delete the head of the list. We can easily do that by head = temp → next and free(temp). As temp was pointing to the head, we have incremented the head and freed temp.
+
+If the position is not 0, we will proceed. Now, we will write a loop with i = 0 to i < (position -1). As we have discussed, to delete a node, we need a pointer to its previous node. So while traversing the loop, we will increment temp.
+
+Now, after the loop ends, if the temp is NULL or temp → next is NULL, we will simply return as the position is more than the number of nodes in the linked list.
+
+If the above condition fails, we will have temp pointing to the (position – 1)th node. Now, we simply have to change the required pointers.
+
+We will save the temp → next → next in a new node next1. Now, we will free temp → next, as it is the node at the given position. In the end, temp → next = next1. – In this way, there is no unnecessary memory leak and the node at the given position is getting deleted successfully.
+
+
+
+
+
+#include <iostream>
+using namespace std;
+
+class Node
+{
+    public:
+    int data;
+    Node *next;
+};
+
+void push(Node** head_ref, int new_data)
+{
+    Node* new_node = new Node();
+    new_node->data = new_data;
+    new_node->next = (*head_ref);
+    (*head_ref) = new_node;
+}
+
+void deleteNode(Node **head_ref, int position)
+{
+
+    if (*head_ref == NULL)
+        return;
+
+    Node* temp = *head_ref;
+
+    if (position == 0)
+    {
+
+        *head_ref = temp->next;
+
+        free(temp);            
+        return;
+    }
+ 
+    for(int i = 0; temp != NULL && i < position - 1; i++)
+        temp = temp->next;
+
+    if (temp == NULL || temp->next == NULL)
+        return;
+
+     Node *next1 = temp->next->next;
+ 
+    
+    free(temp->next); 
+
+    temp->next = next1;
+}
+
+void printList( Node *node)
+{
+    while (node != NULL)
+    {
+        cout << node->data << " ";
+        node = node->next;
+    }
+}
+int main()
+{
+
+    Node* head = NULL;
+ 
+    push(&head, 7);
+    push(&head, 2);
+    push(&head, 5);
+    push(&head, 1);
+ 
+    cout << "Created Linked List: ";
+    printList(head);
+    deleteNode(&head, 2);
+    cout << "\nLinked List after Deletion at position 2: ";
+    printList(head);
+    return 0;
+}
+
